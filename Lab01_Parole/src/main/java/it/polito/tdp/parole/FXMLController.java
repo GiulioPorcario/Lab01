@@ -5,14 +5,22 @@ import it.polito.tdp.parole.model.Parole;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
+import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseDragEvent;
 
 public class FXMLController {
 	
 	Parole elenco ;
+	
+	@FXML
+	private TextArea txtTempo;
+	
+	@FXML
+    private Button btnClear;
 
     @FXML
     private ResourceBundle resources;
@@ -33,13 +41,23 @@ public class FXMLController {
     private Button btnReset;
 
     @FXML
-    void doInsert(ActionEvent event) {
-    	// TODO
+    void doInsert(ActionEvent event) 
+    {
+    long inizio = System.nanoTime();
+    elenco.addParola(txtParola.getText());
+    txtParola.clear();
+    elenco.getElenco();
+    txtResult.setText(elenco.stampaElenco());
+    long fine = System.nanoTime();
+    txtTempo.setText(""+(fine-inizio)+" ns");
     }
-
+    
     @FXML
-    void doReset(ActionEvent event) {
-    	// TODO
+    void doReset(ActionEvent event) 
+    {
+    	elenco.reset();
+    	txtResult.clear();
+    	txtTempo.clear();
     }
 
     @FXML
@@ -50,5 +68,17 @@ public class FXMLController {
         assert btnReset != null : "fx:id=\"btnReset\" was not injected: check your FXML file 'Scene.fxml'.";
 
         elenco = new Parole() ;
+    }
+    
+    @FXML
+    void doClear(ActionEvent event) 
+    {
+    	long inizio = System.nanoTime();
+    	
+    	String ss=txtResult.getSelectedText();
+    	elenco.listaParole.remove(ss);
+    	txtResult.setText(elenco.stampaElenco());	
+    	long fine = System.nanoTime();
+    	txtTempo.setText(""+(fine-inizio)+ " ns");
     }
 }
